@@ -1,0 +1,17 @@
+{
+  "uuid": "35b1c4d4-6c16-4f41-a7de-c267c6b5564d",
+  "shortName": "toast",
+  "longName": "toast",
+  "companyName": "MakeAwesomeHappen",
+  "versionCode": 1,
+  "versionLabel": "1.0",
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
