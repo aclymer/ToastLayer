@@ -15,8 +15,8 @@ static void window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(text_layer));
 
   // Create and show a ToastLayer
-  test = toast_layer_create(window, "This is quite a long example toast notification!", 3000);
-  toast_layer_show(test);
+  test = toast_layer_create(window);
+  toast_layer_show(test, "This is quite a long notification toast!", 5000);
 }
 
 static void window_unload(Window *window) {

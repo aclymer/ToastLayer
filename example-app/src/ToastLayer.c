@@ -1,29 +1,11 @@
 #include "ToastLayer.h"
 
-ToastLayer* toast_layer_create(Window *parent, char *message, int duration)
+ToastLayer* toast_layer_create(Window *parent)
 {
   ToastLayer *this = malloc(sizeof(ToastLayer));
-  this->duration = duration;
+  
+  this->parent = parent;
   this->parent_bounds = layer_get_bounds(window_get_root_layer(parent));
-
-  int length = strlen(message) + 1;
-  this->content_buffer = malloc(length * sizeof(char));
-  snprintf(this->content_buffer, length * sizeof(char), "%s", message);
-
-  // Create large, scale down
-  this->content_layer = text_layer_create(GRect(TOAST_LAYER_MARGIN, 168 + TOAST_LAYER_MARGIN, 144 - (2 * TOAST_LAYER_MARGIN), 168));
-  text_layer_set_text(this->content_layer, this->content_buffer);
-  text_layer_set_background_color(this->content_layer, GColorWhite);
-
-  // Create offscreen according to size used by TextLayer
-  this->size = text_layer_get_content_size(this->content_layer);
-  this->size.h += 10; // Better wrapping
-  this->bg_layer = text_layer_create(GRect(0, this->parent_bounds.size.h, 144, this->size.h + TOAST_LAYER_MARGIN));
-  text_layer_set_background_color(this->bg_layer, GColorBlack);
-
-  // Add BG first
-  layer_add_child(window_get_root_layer(parent), text_layer_get_layer(this->bg_layer));
-  layer_add_child(window_get_root_layer(parent), text_layer_get_layer(this->content_layer));
 
   return this;
 }
@@ -74,11 +56,34 @@ static void timer_callback(void *context)
   this->is_visible = false;
 }
 
-void toast_layer_show(ToastLayer *this)
+void toast_layer_show(ToastLayer *this, char *message, int duration)
 {
   if(this->is_visible == false)
   {
     this->is_visible = true;
+
+    // Set up
+    this->duration = duration;
+
+    // Allocate buffer
+    int length = strlen(message) + 1;
+    this->content_buffer = malloc(length * sizeof(char));
+    snprintf(this->content_buffer, length * sizeof(char), "%s", message);
+
+    // Create large, scale down
+    this->content_layer = text_layer_create(GRect(TOAST_LAYER_MARGIN, 168 + TOAST_LAYER_MARGIN, 144 - (2 * TOAST_LAYER_MARGIN), 168));
+    text_layer_set_text(this->content_layer, this->content_buffer);
+    text_layer_set_background_color(this->content_layer, GColorWhite);
+
+    // Create offscreen according to size used by TextLayer
+    this->size = text_layer_get_content_size(this->content_layer);
+    this->size.h += 10; // Better wrapping
+    this->bg_layer = text_layer_create(GRect(0, this->parent_bounds.size.h, 144, this->size.h + TOAST_LAYER_MARGIN));
+    text_layer_set_background_color(this->bg_layer, GColorBlack);
+
+    // Add BG first
+    layer_add_child(window_get_root_layer(this->parent), text_layer_get_layer(this->bg_layer));
+    layer_add_child(window_get_root_layer(this->parent), text_layer_get_layer(this->content_layer));
 
     // Background
     GRect start = GRect(0, this->parent_bounds.size.h, 144, 0);

@@ -23,6 +23,8 @@ typedef struct {
   GSize size;
   GRect parent_bounds;
 
+  Window *parent;
+
   TextLayer *bg_layer;
   TextLayer *content_layer;
 
@@ -32,7 +34,7 @@ typedef struct {
 /**
  * Create a ToastLayer and add it to the parent Window
  */
-ToastLayer* toast_layer_create(Window *parent, char *message, int duration);
+ToastLayer* toast_layer_create(Window *parent);
 
 /**
  * Destroy a ToastLayer
@@ -42,7 +44,7 @@ void toast_layer_destroy(ToastLayer *this);
 /**
  * Pop up the ToastLayer
  */
-void toast_layer_show(ToastLayer *this);
+void toast_layer_show(ToastLayer *this, char *message, int duration);
 
 /**
  * Hide the ToastLayer
