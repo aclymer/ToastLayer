@@ -44,7 +44,7 @@ void toast_layer_destroy(ToastLayer *this);
 /**
  * Pop up the ToastLayer
  */
-void toast_layer_show(ToastLayer *this, char *message, int duration);
+void toast_layer_show(ToastLayer *this, char *message, int duration, int height);
 
 /**
  * Hide the ToastLayer
