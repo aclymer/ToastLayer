@@ -6,7 +6,9 @@ ToastLayer* toast_layer_create(Window *parent)
   
   this->parent = parent;
   this->parent_bounds = layer_get_bounds(window_get_root_layer(parent));
-
+  this->content_layer = text_layer_create(GRect(TOAST_LAYER_MARGIN, 168 + TOAST_LAYER_MARGIN, 144 - (2 * TOAST_LAYER_MARGIN), 168));
+  this->bg_layer = text_layer_create(GRect(0, this->parent_bounds.size.h, 144, this->size.h + TOAST_LAYER_MARGIN));
+    
   return this;
 }
 
@@ -46,6 +48,8 @@ void toast_layer_hide(ToastLayer *this)
     finish = GRect(TOAST_LAYER_MARGIN, this->parent_bounds.size.h + TOAST_LAYER_MARGIN, 144 - (2 * TOAST_LAYER_MARGIN), 0);
     animate_layer(text_layer_get_layer(this->content_layer), start, finish, TOAST_LAYER_ANIM_DURATION);
   }
+  
+  free(this->content_buffer); // Closes a memory leak when using multiple show/hide events
 }
 
 static void timer_callback(void *context)
@@ -56,7 +60,7 @@ static void timer_callback(void *context)
   this->is_visible = false;
 }
 
-void toast_layer_show(ToastLayer *this, char *message, int duration)
+void toast_layer_show(ToastLayer *this, char *message, int duration, int height)
 {
   if(this->is_visible == false)
   {
@@ -71,14 +75,12 @@ void toast_layer_show(ToastLayer *this, char *message, int duration)
     snprintf(this->content_buffer, length * sizeof(char), "%s", message);
 
     // Create large, scale down
-    this->content_layer = text_layer_create(GRect(TOAST_LAYER_MARGIN, 168 + TOAST_LAYER_MARGIN, 144 - (2 * TOAST_LAYER_MARGIN), 168));
     text_layer_set_text(this->content_layer, this->content_buffer);
     text_layer_set_background_color(this->content_layer, GColorWhite);
 
     // Create offscreen according to size used by TextLayer
     this->size = text_layer_get_content_size(this->content_layer);
-    this->size.h += 10; // Better wrapping
-    this->bg_layer = text_layer_create(GRect(0, this->parent_bounds.size.h, 144, this->size.h + TOAST_LAYER_MARGIN));
+    this->size.h = height; // Better wrapping
     text_layer_set_background_color(this->bg_layer, GColorBlack);
 
     // Add BG first
