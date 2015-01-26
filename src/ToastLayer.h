@@ -42,7 +42,7 @@ ToastLayer* toast_layer_create(Window *parent);
 void toast_layer_destroy(ToastLayer *this);
 
 /**
- * Pop up the ToastLayer
+ * Pop up the ToastLayer to 'height' from bottom
  */
 void toast_layer_show(ToastLayer *this, char *message, int duration, int height);
 
