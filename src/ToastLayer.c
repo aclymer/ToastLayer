@@ -80,7 +80,7 @@ void toast_layer_show(ToastLayer *this, char *message, int duration, int height)
 
     // Create offscreen according to size used by TextLayer
     this->size = text_layer_get_content_size(this->content_layer);
-    this->size.h = height; // Better wrapping
+    this->size.h = 168 - height; // window pops up to 'height' from bottom
     text_layer_set_background_color(this->bg_layer, GColorBlack);
 
     // Add BG first
